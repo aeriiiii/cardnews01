@@ -1,0 +1,6 @@
+.env
+node_modules/
+server.log
+tools/board/out/
+.claude/
+*.log

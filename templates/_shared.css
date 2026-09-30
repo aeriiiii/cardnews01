@@ -1,0 +1,214 @@
+/* 비비의 블로그월드 카드뉴스 공통 디자인
+   규칙은 CLAUDE.md 2장. 레이아웃·분위기는 input/참고디자인/ 참고.
+   ▼ 색·여백·크기는 전부 여기 변수만 바꾸면 된다. */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+:root {
+  /* 색 */
+  --text: #000000;
+  --bg: #edebe7;
+  --accent: #005cf0;
+  --on-accent: #edebe7;      /* 강조색 박스 위 글자 */
+  --muted: 0.45;             /* 부제 글자 옅기 (글자색 투명도) */
+  --grain: 0.28;             /* 배경 종이 질감(고운 점) 진하기 (0 = 끄기) */
+
+  /* 카드 (1080x1350 고정) */
+  --card-w: 1080px;
+  --card-h: 1350px;
+
+  /* 여백 */
+  --pad-x: 84px;             /* 좌우 여백 */
+  --pad-top: 190px;          /* 본문 위 여백 */
+  --gap-kicker: 26px;        /* 머리말 ↔ 제목 */
+  --gap-sub: 28px;           /* 제목 ↔ 부제 */
+  --gap-points: 64px;        /* 부제 ↔ 목록 */
+  --gap-point: 34px;         /* 목록 항목 사이 */
+  --gap-icon-title: 72px;    /* 표지·마무리: 아이콘 ↔ 제목 */
+
+  /* 글자 */
+  --cover-title: 90px;       /* 표지 제목 */
+  --outro-title: 72px;       /* 마무리 제목 */
+  --cover-sub: 36px;         /* 표지·마무리 부제 */
+  --kicker-size: 30px;       /* 머리말 */
+  --content-title: 66px;     /* 본문 소제목 */
+  --sub-size: 32px;          /* 본문 부제 (회색) */
+  --point-size: 34px;        /* 목록 글자 */
+  --point-line: 1.5;
+  --tracking: -0.035em;
+
+  /* 별표 (머리말·목록 앞) */
+  --star-size: 26px;
+  --star-gap: 22px;
+
+  /* 아이콘 */
+  --icon-cover: 380px;       /* 표지·마무리: 가운데 */
+  --icon-content: 300px;     /* 본문: 오른쪽 아래 */
+  --icon-stroke: 7px;        /* 모든 카드 같은 선 굵기 */
+  --icon-gap: 150px;         /* 아이콘 아래 여백 (핸들과 겹치지 않게) */
+
+  /* 핸들 */
+  --handle-size: 24px;
+  --handle-bottom: 56px;
+  --handle-opacity: 0.45;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: var(--card-w);
+  height: var(--card-h);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+body {
+  font-family: "Pretendard", sans-serif;
+  color: var(--text);
+  letter-spacing: var(--tracking);
+  word-break: keep-all;          /* 긴 제목은 글자를 줄이지 않고 단어 단위로 줄바꿈 */
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  padding: var(--pad-top) var(--pad-x) 0;
+  overflow: hidden;
+}
+
+/* 배경 종이 질감: 고운 점 (글자색을 옅게, 결 무늬 없음) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14 0 0 0 -9.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.card > * { position: relative; }
+
+/* ---------- 공통 ---------- */
+.keep { white-space: nowrap; }    /* 줄바꿈으로 떨어지면 안 되는 말 묶기 */
+
+.hl {                             /* 제목 속 핵심 말: 강조색 박스 */
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0 0.16em;
+  border-radius: 6px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.star {                           /* 네 갈래 별 (강조색) */
+  display: inline-block;
+  flex: none;
+  width: var(--star-size);
+  height: var(--star-size);
+  background: var(--accent);
+  clip-path: polygon(50% 0, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0 50%, 41% 41%);
+}
+
+.handle {
+  position: absolute !important;
+  left: 0;
+  right: 0;
+  bottom: var(--handle-bottom);
+  text-align: center;
+  font-size: var(--handle-size);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  opacity: var(--handle-opacity);
+}
+
+.icon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.icon svg * {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;   /* 아이콘 크기가 달라도 선 굵기는 같게 */
+}
+
+/* ---------- 표지·마무리: 아이콘 위, 제목 아래 — 묶어서 카드 가운데 ---------- */
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 var(--pad-x) calc(var(--handle-bottom) + var(--handle-size));
+}
+.cover .icon {
+  width: var(--icon-cover);
+  height: var(--icon-cover);
+  margin-bottom: var(--gap-icon-title);
+}
+.cover .title {
+  font-size: var(--cover-title);
+  line-height: 1.22;
+  font-weight: 300;               /* 가는 줄 */
+}
+.cover .title > span { display: block; }
+.cover .title .strong {           /* 굵은 줄: 강조색 띠 */
+  display: inline-block;
+  font-weight: 800;
+  margin: 0.08em 0;
+  padding: 0.02em 0.22em 0.06em;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.cover .sub {
+  margin-top: 36px;
+  font-size: var(--cover-sub);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.cover.outro .title { font-size: var(--outro-title); }
+
+/* ---------- 본문 ---------- */
+.content .kicker {                /* ✦ 머리말 */
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--kicker-size);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.content .title {
+  margin-top: var(--gap-kicker);
+  font-size: var(--content-title);
+  font-weight: 800;
+  line-height: 1.34;
+}
+.content .sub {                   /* 회색 한 줄 요약 */
+  margin-top: var(--gap-sub);
+  font-size: var(--sub-size);
+  font-weight: 400;
+  opacity: var(--muted);
+}
+.content .points {                /* ✦ 목록 = 설명글 */
+  list-style: none;
+  margin-top: var(--gap-points);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-point);
+}
+.content .points li {
+  display: flex;
+  gap: var(--star-gap);
+  font-size: var(--point-size);
+  line-height: var(--point-line);
+  font-weight: 400;
+}
+.content .points li .star { margin-top: calc(var(--point-size) * var(--point-line) / 2 - var(--star-size) / 2); }
+.content .points b { font-weight: 800; }
+.content .icon {
+  position: absolute !important;
+  right: var(--pad-x);
+  bottom: var(--icon-gap);
+  width: var(--icon-content);
+  height: var(--icon-content);
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<!--
+  본문 틀 (아이콘 + 소제목 + 설명글)
+  - .kicker : ✦ 머리말 (예: POINT 01 · 감정 조절)
+  - .title  : 소제목. 길면 자동 줄바꿈. 핵심 말은 <span class="hl">…</span> (강조색 박스)
+  - .sub    : 회색 한 줄 요약 (없으면 지워도 됨)
+  - .points : 설명글 3~5개를 ✦ 목록으로. 한 항목 = 한 호흡. 핵심 말은 <b>…</b>
+  - .icon   : 선만 있는 SVG, viewBox="0 0 100 100" — 오른쪽 아래 고정
+  output 에 복사할 때는 CSS 경로를 ../../templates/_shared.css 로 바꾼다.
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080">
+  <title>content</title>
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+  <main class="card content">
+    <div class="kicker"><span class="star"></span>POINT 01 · 감정이 앞설 때</div>
+    <h2 class="title">화가 날수록<br><span class="hl">한 박자</span> 쉬어 가세요</h2>
+    <p class="sub">말은 한 번 뱉으면 주워 담을 수 없으니까요.</p>
+
+    <ul class="points">
+      <li><span class="star"></span><span>화난 상태의 말은 <b>의도보다 세게</b> 전달돼요</span></li>
+      <li><span class="star"></span><span>잠깐 숨을 고르면 대화의 방향이 달라져요</span></li>
+      <li><span class="star"></span><span>답은 <b>감정이 가라앉은 뒤</b>에 해도 늦지 않아요</span></li>
+    </ul>
+
+    <div class="icon">
+      <!-- 한 박자 쉬기 → 모래시계 -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 10 H76 M24 90 H76"/>
+        <path d="M30 10 C30 38 47 42 47 50 C47 58 30 62 30 90"/>
+        <path d="M70 10 C70 38 53 42 53 50 C53 58 70 62 70 90"/>
+        <path d="M38 82 C42 74 58 74 62 82"/>
+      </svg>
+    </div>
+
+    <div class="handle">@bibi_blog_world</div>
+  </main>
+</body>
+</html>

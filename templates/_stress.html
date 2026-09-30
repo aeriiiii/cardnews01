@@ -1,0 +1,36 @@
+<!doctype html>
+<!--
+  표지 틀 (마무리 카드도 이 틀을 쓴다)
+  - .label : 채널명 | 시리즈명 (가운데 <i></i> 는 세로 구분선)
+  - .title : 큰 제목. 길면 자동 줄바꿈 (글자 크기는 줄이지 않음)
+             핵심 말은 <span class="hl">…</span> (기울어진 강조색 박스)
+             떨어지면 어색한 말은 <span class="keep">…</span> 로 묶는다
+  - .sub   : 부제 한 줄 (없으면 지워도 됨)
+  - .icon  : 선만 있는 SVG, viewBox="0 0 100 100" — 색·굵기·크기는 _shared.css 변수
+  output 에 복사할 때는 CSS 경로를 ../../templates/_shared.css 로 바꾼다.
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080">
+  <title>cover</title>
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+  <main class="card cover">
+    <div class="label">비비의 블로그월드 <i></i> 마케팅 노트</div>
+    <h1 class="title">반드시 <span class="keep">침묵해야 할</span> <span class="hl">7가지 순간</span></h1>
+    <p class="sub">타깃 · 프로필 · 키워드 · 동선<br>@bibi_blog_world 팔로우하고 하나씩 챙겨가세요</p>
+
+    <div class="icon">
+      <!-- 침묵 → 가로줄이 그어진 말풍선 -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 18 H84 a8 8 0 0 1 8 8 V62 a8 8 0 0 1 -8 8 H46 L28 86 V70 H16 a8 8 0 0 1 -8 -8 V26 a8 8 0 0 1 8 -8 Z"/>
+        <path d="M32 44 H68"/>
+      </svg>
+    </div>
+
+    <div class="handle">@bibi_blog_world</div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<title>비비 예약 보드</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&display=swap">
+<style>
+  /* 한 줄 레이아웃: 날짜순 예약 카드를 세로로 쌓고, 각 카드 = 날짜 · 카드 이미지 · 캡션 · 예약 체크 */
+  :root {
+    --bg: #edebe7; --surface: #f7f6f3; --fg: #16181d; --muted: #6b6760;
+    --line: #d9d5cd; --accent: #005cf0; --on-accent: #ffffff; --done: #1e7a45;
+    --font: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #17181b; --surface: #202226; --fg: #ecebe8; --muted: #a09c95;
+    --line: #34363b; --accent: #5b95ff; --on-accent: #0d0f12; --done: #5ec48a; color-scheme: dark; } }
+  :root[data-theme="dark"] {
+    --bg: #17181b; --surface: #202226; --fg: #ecebe8; --muted: #a09c95;
+    --line: #34363b; --accent: #5b95ff; --on-accent: #0d0f12; --done: #5ec48a; color-scheme: dark; }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55; }
+  .wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 48px; display: grid; gap: 20px; }
+  header h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -0.02em; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); font-size: 14px; }
+  details.how { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  details.how summary { font-weight: 600; cursor: pointer; }
+  details.how ol { margin: 10px 0 2px; padding-left: 20px; display: grid; gap: 4px; }
+
+  .post { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .post.done { opacity: .6; }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; }
+  .when { font-weight: 700; color: var(--accent); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .ttl { font-weight: 700; font-size: 17px; margin-top: 2px; letter-spacing: -0.02em; min-width: 0; }
+  .chip { flex: none; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: transparent; cursor: pointer; font-family: inherit; }
+  .post.done .chip { color: var(--done); border-color: var(--done); }
+  .strip { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 12px; scroll-snap-type: x mandatory; }
+  .strip figure { margin: 0; flex: none; width: 42%; max-width: 200px; scroll-snap-align: start; }
+  .strip img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+  .strip figcaption { font-size: 12px; color: var(--muted); text-align: center; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .hint { font-size: 12px; color: var(--muted); padding: 0 16px; margin: 0 0 10px; }
+  .cap { margin: 0 16px; padding: 12px 14px; background: var(--bg); border-radius: 10px; white-space: pre-wrap; font-size: 14px; max-height: 220px; overflow: auto; user-select: text; }
+  .actions { display: flex; gap: 8px; padding: 12px 16px 16px; }
+  .btn { flex: 1; font: inherit; font-weight: 700; font-size: 15px; border: 0; border-radius: 10px; padding: 12px; cursor: pointer; background: var(--accent); color: var(--on-accent); }
+  .btn:focus-visible, .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .folder { font-size: 12px; color: var(--muted); padding: 0 16px 14px; margin: 0; word-break: break-all; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>인스타 예약 보드</h1>
+    <p>@bibi_blog_world · 카드를 저장하고 캡션을 복사해서 인스타 앱에서 예약하세요.</p>
+  </header>
+
+  <details class="how">
+    <summary>인스타 앱에서 예약하는 순서</summary>
+    <ol>
+      <li>카드 이미지를 길게 눌러 사진첩에 저장 (01번부터 순서대로)</li>
+      <li>아래 "캡션 복사" 누르기</li>
+      <li>인스타 앱 + → 게시물 → 여러 장 선택으로 01부터 순서대로 고르기</li>
+      <li>캡션 칸에 붙여넣기</li>
+      <li>고급 설정 → "이 게시물 예약하기" 켜고 날짜·시간 맞추기</li>
+      <li>예약했으면 여기서 "예약함"으로 표시</li>
+    </ol>
+  </details>
+
+  <main id="list" style="display:grid;gap:20px"></main>
+</div>
+
+<script>
+  var POSTS = /*POSTS*/[];
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function load() { try { return JSON.parse(localStorage.getItem('booked') || '{}'); } catch (e) { return {}; } }
+  function save(v) { try { localStorage.setItem('booked', JSON.stringify(v)); } catch (e) {} }
+  var booked = load();
+  var list = document.getElementById('list');
+  list.innerHTML = POSTS.map(function (p) {
+    return '<article class="post' + (booked[p.key] ? ' done' : '') + '" id="' + p.key + '">' +
+      '<div class="head"><div style="min-width:0"><div class="when">' + esc(p.when) + '</div><div class="ttl">' + esc(p.title) + '</div></div>' +
+      '<button class="chip" data-k="' + p.key + '">' + (booked[p.key] ? '예약함' : '예약 전') + '</button></div>' +
+      '<div class="strip">' + p.images.map(function (src, i) {
+        return '<figure><img src="' + esc(src) + '" alt="' + (i + 1) + '번 카드" loading="lazy"><figcaption>' + String(i + 1).padStart(2, '0') + '</figcaption></figure>';
+      }).join('') + '</div>' +
+      '<p class="hint">옆으로 넘겨서 ' + p.images.length + '장 모두 · 길게 눌러 저장</p>' +
+      '<div class="cap" id="cap-' + p.key + '">' + esc(p.caption) + '</div>' +
+      '<div class="actions"><button class="btn" data-copy="' + p.key + '">캡션 복사</button></div>' +
+      '<p class="folder">PC·OneDrive: 문서/ai/cardnews/앱예약/' + esc(p.folder) + '</p></article>';
+  }).join('');
+
+  list.addEventListener('click', function (e) {
+    var chip = e.target.closest('[data-k]');
+    if (chip) {
+      var k = chip.dataset.k;
+      booked[k] = !booked[k]; save(booked);
+      chip.textContent = booked[k] ? '예약함' : '예약 전';
+      document.getElementById(k).classList.toggle('done', !!booked[k]);
+      return;
+    }
+    var btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    var p = POSTS.filter(function (x) { return x.key === btn.dataset.copy; })[0];
+    function selectFallback() {
+      var el = document.getElementById('cap-' + p.key);
+      var r = document.createRange(); r.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = '선택했어요 · 길게 눌러 복사';
+    }
+    try {
+      navigator.clipboard.writeText(p.caption).then(function () {
+        btn.textContent = '복사했어요';
+        setTimeout(function () { btn.textContent = '캡션 복사'; }, 1600);
+      }, selectFallback);
+    } catch (err) { selectFallback(); }
+  });
+</script>

@@ -1,0 +1,32 @@
+<!doctype html>
+<!--
+  카드 1장 뼈대. output/날짜_주제/card_XX_이름.html 로 복사해서 채운다.
+  - {{TYPE}}    : cover | body | outro
+  - {{CONTENT}} : 카드 종류별 내용 (아래 예시)
+  - {{ICON}}    : 선만 있는 SVG (viewBox="0 0 100 100", fill 없음 — 색·굵기는 card.css 가 정함)
+
+  표지·마무리 예시:
+    <span class="kicker">작은 제목</span>
+    <h1>큰 제목<br><span class="hl">강조</span></h1>
+    <p class="sub">부제</p>
+
+  본문 예시:
+    <div class="num">01</div>
+    <h2>소제목</h2>
+    <div class="desc"><p>설명 한 줄</p> … (3~5줄)</div>
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080">
+  <title>card</title>
+  <link rel="stylesheet" href="../../templates/card.css">
+</head>
+<body>
+  <main class="card card--{{TYPE}}">
+    {{CONTENT}}
+    <div class="icon">{{ICON}}</div>
+    <div class="handle">@bibi_blog_world</div>
+  </main>
+</body>
+</html>

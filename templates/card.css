@@ -1,0 +1,137 @@
+/* 비비의 블로그월드 카드뉴스 공통 디자인 — 규칙은 CLAUDE.md 2장 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+:root {
+  --text: #000000;
+  --bg: #edebe7;
+  --accent: #005cf0;
+  --pad-x: 100px;
+  --icon-stroke: 7px;      /* 모든 카드 같은 선 굵기 */
+  --icon-gap: 150px;       /* 아이콘 아래 여백 (핸들과 겹치지 않게) */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+body {
+  font-family: "Pretendard", sans-serif;
+  color: var(--text);
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  padding: 150px var(--pad-x) 0;
+}
+
+/* ---------- 공통 요소 ---------- */
+.kicker {
+  display: inline-block;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  padding-bottom: 10px;
+  border-bottom: 4px solid var(--accent);
+}
+
+.hl { /* 강조: 형광펜 밑줄 */
+  background: linear-gradient(transparent 58%, rgba(0, 92, 240, 0.22) 58%);
+  padding: 0 4px;
+}
+
+.handle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 56px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  opacity: 0.45;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.icon svg * {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- 본문 카드 ---------- */
+.card--body .num {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+.card--body h2 {
+  font-size: 66px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  margin-bottom: 56px;
+}
+.card--body .desc p {
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: -0.02em;
+}
+.card--body .icon {
+  position: absolute;
+  right: var(--pad-x);
+  bottom: var(--icon-gap);
+  width: 300px;
+  height: 300px;
+}
+
+/* ---------- 표지·마무리 카드 ---------- */
+.card--cover,
+.card--outro { text-align: center; }
+
+.card--cover h1,
+.card--outro h1 {
+  margin-top: 44px;
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1.28;
+  letter-spacing: -0.04em;
+}
+.card--outro h1 { font-size: 72px; }
+
+.card--cover .sub,
+.card--outro .sub {
+  margin-top: 36px;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+}
+
+.card--cover .icon,
+.card--outro .icon {
+  position: absolute;
+  left: 50%;
+  bottom: var(--icon-gap);
+  width: 380px;
+  height: 380px;
+  transform: translateX(-50%);
+}
