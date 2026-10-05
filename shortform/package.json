@@ -1,0 +1,25 @@
+{
+  "name": "shortform",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render ShortForm out/shortform.mp4",
+    "still": "remotion still ShortForm out/preview.png --frame=45"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@remotion/cli": "^4.0.533",
+    "@remotion/fonts": "^4.0.533",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.533"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

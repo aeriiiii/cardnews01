@@ -202,6 +202,8 @@ cardnews/
 │   ├── ig_check.mjs  ← 인스타 연결 확인, 계정 ID 를 .env 에 저장
 │   └── ig_publish.mjs ← 시리즈 → 내 인스타 캐러셀 발행 (미리보기 / --yes)
 ├── .env              ← 인스타 토큰·계정 ID (비밀, 출력 금지)
+├── shortform/        ← 세로 숏폼 영상 (Remotion, 1080x1920, 30fps, 자막 폰트 Pretendard)
+│                       cd shortform → npm run dev (미리보기) / npm run render (out/shortform.mp4)
 ├── input/            ← URL에서 가져온 원본
 │   └── 참고디자인/    ← 레이아웃·분위기 참고용 카드뉴스
 ├── templates/        ← _shared.css + cover.html + content.html
