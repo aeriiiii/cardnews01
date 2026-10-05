@@ -116,14 +116,28 @@ async function cleanup() {
 let exitCode = 0;
 try {
   console.log('2/4 임시 공개 주소 만들기 (litterbox.catbox.moe, 1시간 뒤 자동 삭제)');
-  for (const j of jpegs) {
+  // litterbox 는 가끔 일시적인 서버 오류(5xx)를 낸다 → 쉬었다가 최대 3번 시도
+  async function uploadOnce(j) {
     const form = new FormData();
     form.append('reqtype', 'fileupload');
     form.append('time', '1h');
     form.append('fileToUpload', new Blob([j.data], { type: 'image/jpeg' }), j.name);
-    const res = await fetch(HOST, { method: 'POST', body: form, headers: { 'User-Agent': UA } });
-    const url = (await res.text()).trim();
-    if (!res.ok || !/^https:\/\/\S+\.jpe?g$/i.test(url)) throw new Error(`임시 호스팅 업로드 실패 (${j.name}): HTTP ${res.status} ${url.slice(0, 100)}`);
+    const res = await fetch(HOST, { method: 'POST', body: form, headers: { 'User-Agent': UA } }).catch(() => null);
+    if (!res) return { ok: false, retry: true, why: '임시 호스팅에 연결하지 못했어요' };
+    const body = (await res.text()).trim();
+    if (res.ok && /^https:\/\/\S+\.jpe?g$/i.test(body)) return { ok: true, url: body };
+    const why = /^</.test(body) ? `임시 호스팅 서버 오류 (HTTP ${res.status})` : `HTTP ${res.status} ${body.slice(0, 80)}`;
+    return { ok: false, retry: res.status >= 500 || res.status === 429, why };
+  }
+  for (const j of jpegs) {
+    let r;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      r = await uploadOnce(j);
+      if (r.ok || !r.retry) break;
+      if (attempt < 3) { console.log(`  ${j.name}: ${r.why} → ${attempt * 5}초 뒤 다시 시도`); await sleep(attempt * 5000); }
+    }
+    if (!r.ok) throw new Error(`임시 호스팅 업로드 실패 (${j.name}): ${r.why}. 3번 시도했어요. 잠시 뒤 다시 눌러 주세요.`);
+    const url = r.url;
     uploaded.push({ url });
     const check = await fetch(url, { headers: { 'User-Agent': UA } });
     const type = check.headers.get('content-type') || '';
